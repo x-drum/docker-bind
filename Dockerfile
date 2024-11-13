@@ -1,10 +1,13 @@
-FROM xdrum/openwrt:latest
+FROM alpine:3.12.0
 
-MAINTAINER Alessio Cassibba (x-drum) <swapon@gmail.com>
+LABEL org.opencontainers.image.authors="Alessio (x-drum) Cassibba [zerodev.it]"
 
-RUN opkg update
-RUN opkg install bind-server bind-tools bind-client && rm -rf /var/opkg-lists
+RUN apk update && \
+  apk add bind && \
+  rm -rf /var/cache/apk/*
 
-EXPOSE 53:5353/udp
+COPY files/named.conf /etc/bind/named.conf
+
+EXPOSE 53:53/udp
 
 CMD ["/usr/sbin/named","-g","-c","/etc/bind/named.conf"]
